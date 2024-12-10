@@ -3,9 +3,11 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.ObjectInput;
+import org.poo.fileio.UserInput;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +75,11 @@ public final class Main {
         ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
         ArrayNode output = objectMapper.createArrayNode();
+
+        Bank bank = new Bank(inputData);
+        bank.doActions(inputData, output);
+
+
 
         /*
          * TODO Implement your function here
