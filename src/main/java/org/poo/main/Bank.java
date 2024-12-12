@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.poo.fileio.CommandInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.main.bankingCommands.*;
+import org.poo.main.commandsOutput.deleteAccountOutput;
+import org.poo.main.commandsOutput.payOnlineOutput;
+import org.poo.main.debugOutput.printUsersOutput;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -44,13 +47,7 @@ public class Bank {
             ObjectNode outputNode = output.objectNode();
             switch(commandInput.getCommand()){
                 case "printUsers":
-                    outputNode.putPOJO("command" , "printUsers");
-                    ArrayList<User> copyUsers = new ArrayList<>();
-                    for ( int i = 0 ; i < users.size(); i++ ){
-                        copyUsers.add(new User(users.get(i)));
-                    }
-                    outputNode.putPOJO("output" , copyUsers);
-                    outputNode.putPOJO("timestamp" , commandInput.getTimestamp());
+                    printUsersOutput.printUsersOutputHandler(outputNode, users, commandInput.getTimestamp());
                     break;
                 case "addAccount":
                     Account newAccount = new Account(commandInput);
@@ -77,30 +74,13 @@ public class Bank {
                     Command payOnline = new payOnlineCommand(users, commandInput.getEmail() , commandInput.getCardNumber(), commandInput.getAmount());
                     CommandInvoker invokerPayOnline = new CommandInvoker(payOnline);
                     invokerPayOnline.executeCommand();
-                    if ( !((payOnlineCommand) payOnline).isFoundCard() ) {
-                        outputNode.putPOJO("command", "payOnline");
-                        ObjectNode payOnlineDetails = output.objectNode();
-                        payOnlineDetails.put("timestamp", commandInput.getTimestamp());
-                        payOnlineDetails.put("description", "Card not found");
-                        outputNode.set("output", payOnlineDetails);
-                        outputNode.put("timestamp", commandInput.getTimestamp());
-                    }
+                    payOnlineOutput.payOnlineOutputHandler(payOnline, outputNode, commandInput.getTimestamp());
                     break;
                 case "deleteAccount":
-                    outputNode.put("command", "deleteAccount");
                     Command deleteAccount = new deleteAccountCommand(users, commandInput.getEmail(), commandInput.getAccount());
                     CommandInvoker invokerDeleteAccount = new CommandInvoker(deleteAccount);
                     invokerDeleteAccount.executeCommand();
-                    ObjectNode outputDetails = output.objectNode();
-                    if ( ( (deleteAccountCommand) deleteAccount ).isSuccess() ) {
-                        outputDetails.put("success", "Account deleted");
-                    } else {
-                        outputDetails.put("error", "Account not found");
-                    }
-                    outputDetails.put("timestamp", commandInput.getTimestamp());
-
-                    outputNode.set("output", outputDetails);
-                    outputNode.put("timestamp", commandInput.getTimestamp());
+                    deleteAccountOutput.deleteAccountOutputHandler(outputNode, deleteAccount, commandInput.getTimestamp());
                     break;
                 case "deleteCard":
                     Command deleteCard = new deleteCardCommand(users, commandInput.getEmail(), commandInput.getCardNumber());
