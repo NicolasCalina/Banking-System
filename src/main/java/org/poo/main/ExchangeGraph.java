@@ -3,10 +3,8 @@ package org.poo.main;
 import java.util.*;
 
 public class ExchangeGraph {
-    // Graful de schimb va fi o hartă de monede către lista de vecini
     private Map<String, List<Edge>> adjList;
 
-    // Clasa pentru o muchie (pentru a stoca monedele și rata de schimb)
     public static class Edge {
         String toCurrency;
         double rate;
@@ -17,53 +15,59 @@ public class ExchangeGraph {
         }
     }
 
+    private static class Node {
+        String currency;
+        double rate;
+
+        public Node(String currency, double rate) {
+            this.currency = currency;
+            this.rate = rate;
+        }
+    }
+
     // Constructor
     public ExchangeGraph() {
         adjList = new HashMap<>();
     }
 
-    // Adăugăm o monedă
     public void addCurrency(String currency) {
         adjList.putIfAbsent(currency, new ArrayList<>());
     }
 
-    // Adăugăm o relație de schimb între două monede
     public void addExchangeRate(String from, String to, double rate) {
         addCurrency(from);
         addCurrency(to);
         adjList.get(from).add(new Edge(to, rate));
-        adjList.get(to).add(new Edge(from, 1 / rate)); // inversul ratei de schimb pentru graf neorientat
+        adjList.get(to).add(new Edge(from, 1 / rate));
     }
 
-    // Găsim distanța între două monede (adică, rata de schimb) folosind BFS
     public double findExchangeRate(String from, String to) {
         if (!adjList.containsKey(from) || !adjList.containsKey(to)) {
-            return -1; // Nu există această monedă
+            return -1;
         }
 
-        // BFS pentru a găsi cea mai scurtă cale
-        Queue<String> queue = new LinkedList<>();
-        Map<String, Double> distances = new HashMap<>();
-        queue.add(from);
-        distances.put(from, 1.0);
+        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(node -> -node.rate)); // Max-heap pentru cel mai bun schimb
+        Map<String, Double> bestRates = new HashMap<>();
+        pq.add(new Node(from, 1.0));
+        bestRates.put(from, 1.0);
 
-        while (!queue.isEmpty()) {
-            String currentCurrency = queue.poll();
-            double currentRate = distances.get(currentCurrency);
+        while (!pq.isEmpty()) {
+            Node current = pq.poll();
 
-            for (Edge neighbor : adjList.get(currentCurrency)) {
-                if (!distances.containsKey(neighbor.toCurrency)) {
-                    double newRate = currentRate * neighbor.rate;
-                    distances.put(neighbor.toCurrency, newRate);
-                    queue.add(neighbor.toCurrency);
+            if (current.currency.equals(to)) {
+                return current.rate;
+            }
 
-                    if (neighbor.toCurrency.equals(to)) {
-                        return newRate;
-                    }
+            for (Edge neighbor : adjList.get(current.currency)) {
+                double newRate = current.rate * neighbor.rate;
+
+                if (newRate > bestRates.getOrDefault(neighbor.toCurrency, 0.0)) {
+                    bestRates.put(neighbor.toCurrency, newRate);
+                    pq.add(new Node(neighbor.toCurrency, newRate));
                 }
             }
         }
 
-        return -1; // Nu există un drum de la `from` la `to`
+        return -1;
     }
 }

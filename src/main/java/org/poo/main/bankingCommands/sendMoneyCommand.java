@@ -48,12 +48,12 @@ public class sendMoneyCommand implements Command {
                 }
         }
         if (senderAccount != null && receiverAccount != null){
-            if ( !senderAccount.getCurrency().equals(receiverAccount.getCurrency() ) ){
-                double convert = exchangeGraph.findExchangeRate(senderAccount.getCurrency(), receiverAccount.getCurrency());
-                amount = amount * convert;
-            }
             if (senderAccount.getBalance() >= amount){
                 senderAccount.setBalance(senderAccount.getBalance() - amount);
+                if ( !senderAccount.getCurrency().equals(receiverAccount.getCurrency() ) ){
+                    double convert = exchangeGraph.findExchangeRate(senderAccount.getCurrency(), receiverAccount.getCurrency());
+                    amount = amount * convert;
+                }
                 receiverAccount.setBalance(receiverAccount.getBalance() + amount);
             }
         }
