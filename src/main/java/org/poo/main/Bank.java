@@ -24,6 +24,7 @@ public class Bank {
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<ExchangeRates> exchangeRates = new ArrayList<>();
     private ArrayList<Commerciants> commerciants = new ArrayList<>();
+    private ExchangeGraph exchangeGraph = new ExchangeGraph();
 
     public Bank(ObjectInput inputData){
         for (int i = 0; i < inputData.getUsers().length; i++) {
@@ -32,7 +33,7 @@ public class Bank {
         }
         for ( int i = 0 ; i < inputData.getExchangeRates().length; i++){
             ExchangeRates exchangeRate = new ExchangeRates(inputData.getExchangeRates()[i]);
-            exchangeRates.add(exchangeRate);
+            exchangeGraph.addExchangeRate(exchangeRate.getFrom(), exchangeRate.getTo(), exchangeRate.getRate());
         }
 //            for (int i = 0; i < inputData.getCommerciants().length; i++) {
 //                Commerciants commerciant = new Commerciants(inputData.getCommerciants()[i]);
@@ -71,7 +72,7 @@ public class Bank {
                     invokerAddFunds.executeCommand();
                     break;
                 case "payOnline":
-                    Command payOnline = new payOnlineCommand(users, commandInput.getEmail() , commandInput.getCardNumber(), commandInput.getAmount());
+                    Command payOnline = new payOnlineCommand(users, commandInput.getEmail() , commandInput.getCardNumber(), commandInput.getAmount(), commandInput.getCurrency(), exchangeGraph);
                     CommandInvoker invokerPayOnline = new CommandInvoker(payOnline);
                     invokerPayOnline.executeCommand();
                     payOnlineOutput.payOnlineOutputHandler(payOnline, outputNode, commandInput.getTimestamp());
@@ -86,6 +87,11 @@ public class Bank {
                     Command deleteCard = new deleteCardCommand(users, commandInput.getEmail(), commandInput.getCardNumber());
                     CommandInvoker invokerDeleteCard = new CommandInvoker(deleteCard);
                     invokerDeleteCard.executeCommand();
+                    break;
+                case "sendMoney":
+                    Command sendMoney = new sendMoneyCommand(users, commandInput.getEmail(), commandInput.getAccount(), commandInput.getReceiver(), commandInput.getAmount(), exchangeGraph);
+                    CommandInvoker invokerSendMoney = new CommandInvoker(sendMoney);
+                    invokerSendMoney.executeCommand();
                     break;
                 default:
                     break;
