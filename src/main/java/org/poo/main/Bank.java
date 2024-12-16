@@ -10,7 +10,8 @@ import org.poo.fileio.ObjectInput;
 import org.poo.main.bankingCommands.*;
 import org.poo.main.commandsOutput.deleteAccountOutput;
 import org.poo.main.commandsOutput.payOnlineOutput;
-import org.poo.main.debugOutput.printUsersOutput;
+import org.poo.main.debugOutput.printTransactionCommand;
+import org.poo.main.debugOutput.printUsersCommand;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -26,12 +27,12 @@ public class Bank {
     private ArrayList<Commerciants> commerciants = new ArrayList<>();
     private ExchangeGraph exchangeGraph = new ExchangeGraph();
 
-    public Bank(ObjectInput inputData){
+    public Bank(ObjectInput inputData) {
         for (int i = 0; i < inputData.getUsers().length; i++) {
             User user = new User(inputData.getUsers()[i]);
             users.add(user);
         }
-        for ( int i = 0 ; i < inputData.getExchangeRates().length; i++){
+        for (int i = 0; i < inputData.getExchangeRates().length; i++) {
             ExchangeRates exchangeRate = new ExchangeRates(inputData.getExchangeRates()[i]);
             exchangeGraph.addExchangeRate(exchangeRate.getFrom(), exchangeRate.getTo(), exchangeRate.getRate());
         }
@@ -41,28 +42,35 @@ public class Bank {
 //            }
     }
 
-    public void doActions(ObjectInput input, ArrayNode output){
+    public void doActions(ObjectInput input, ArrayNode output) {
         Utils.resetRandom();
 
-        for (CommandInput commandInput : input.getCommands() ){
+        for (CommandInput commandInput : input.getCommands()) {
             ObjectNode outputNode = output.objectNode();
-            switch(commandInput.getCommand()){
+            switch (commandInput.getCommand()) {
                 case "printUsers":
-                    printUsersOutput.printUsersOutputHandler(outputNode, users, commandInput.getTimestamp());
+                    Command printUsers = new printUsersCommand(users, outputNode, commandInput.getTimestamp());
+                    CommandInvoker invokerPrintUsers = new CommandInvoker(printUsers);
+                    invokerPrintUsers.executeCommand();
+                    break;
+                case "printTransactions":
+                    Command printTransactions = new printTransactionCommand(users, outputNode, commandInput.getEmail(), commandInput.getTimestamp());
+                    CommandInvoker invokerPrintTransactions = new CommandInvoker(printTransactions);
+                    invokerPrintTransactions.executeCommand();
                     break;
                 case "addAccount":
                     Account newAccount = new Account(commandInput);
-                    Command addAccount = new AddAccountCommand(users, commandInput.getEmail(), newAccount);
+                    Command addAccount = new AddAccountCommand(users, commandInput.getEmail(), newAccount , commandInput.getTimestamp());
                     CommandInvoker invoker = new CommandInvoker(addAccount);
                     invoker.executeCommand();
                     break;
                 case "createCard":
-                    Command createCard = new createCardCommand(users, commandInput.getEmail(), commandInput.getAccount() , 0);
+                    Command createCard = new createCardCommand(users, commandInput.getEmail(), commandInput.getAccount(), 0, commandInput);
                     CommandInvoker invokerCreateCard = new CommandInvoker(createCard);
                     invokerCreateCard.executeCommand();
                     break;
                 case "createOneTimeCard":
-                    Command createOneTimeCard = new createCardCommand(users, commandInput.getEmail(), commandInput.getAccount() , 1);
+                    Command createOneTimeCard = new createCardCommand(users, commandInput.getEmail(), commandInput.getAccount(), 1, commandInput);
                     CommandInvoker invokerCreateOneTimeCard = new CommandInvoker(createOneTimeCard);
                     invokerCreateOneTimeCard.executeCommand();
                     break;
@@ -72,7 +80,7 @@ public class Bank {
                     invokerAddFunds.executeCommand();
                     break;
                 case "payOnline":
-                    Command payOnline = new payOnlineCommand(users, commandInput.getEmail() , commandInput.getCardNumber(), commandInput.getAmount(), commandInput.getCurrency(), exchangeGraph);
+                    Command payOnline = new payOnlineCommand(users,commandInput, exchangeGraph);
                     CommandInvoker invokerPayOnline = new CommandInvoker(payOnline);
                     invokerPayOnline.executeCommand();
                     payOnlineOutput.payOnlineOutputHandler(payOnline, outputNode, commandInput.getTimestamp());
@@ -84,19 +92,29 @@ public class Bank {
                     deleteAccountOutput.deleteAccountOutputHandler(outputNode, deleteAccount, commandInput.getTimestamp());
                     break;
                 case "deleteCard":
-                    Command deleteCard = new deleteCardCommand(users, commandInput.getEmail(), commandInput.getCardNumber());
+                    Command deleteCard = new deleteCardCommand(users, commandInput.getEmail(), commandInput.getCardNumber(), commandInput.getTimestamp());
                     CommandInvoker invokerDeleteCard = new CommandInvoker(deleteCard);
                     invokerDeleteCard.executeCommand();
                     break;
                 case "sendMoney":
-                    Command sendMoney = new sendMoneyCommand(users, commandInput.getEmail(), commandInput.getAccount(), commandInput.getReceiver(), commandInput.getAmount(), exchangeGraph);
+                    Command sendMoney = new sendMoneyCommand(users, commandInput, exchangeGraph);
                     CommandInvoker invokerSendMoney = new CommandInvoker(sendMoney);
                     invokerSendMoney.executeCommand();
+                    break;
+                case "setAlias":
+                    Command setAlias = new AliasCommand(users, commandInput.getEmail(), commandInput.getAlias(), commandInput.getAccount());
+                    CommandInvoker invokerSetAlias = new CommandInvoker(setAlias);
+                    invokerSetAlias.executeCommand();
+                    break;
+                case "setMinimumBalance":
+                    Command setMinimumBalance = new SetMinBalance(users, commandInput.getAccount(), commandInput.getMinBalance());
+                    CommandInvoker invokerSetMinBalance = new CommandInvoker(setMinimumBalance);
+                    invokerSetMinBalance.executeCommand();
                     break;
                 default:
                     break;
             }
-            if ( !outputNode.isEmpty() ){
+            if (!outputNode.isEmpty()) {
                 output.add(outputNode);
             }
         }

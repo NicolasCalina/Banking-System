@@ -13,7 +13,7 @@ public class ExchangeRates {
     private double rate;
     private int timestamp;
 
-    public ExchangeRates(ExchangeInput exchangeRate){
+    public ExchangeRates(ExchangeInput exchangeRate) {
         this.from = exchangeRate.getFrom();
         this.to = exchangeRate.getTo();
         this.rate = exchangeRate.getRate();

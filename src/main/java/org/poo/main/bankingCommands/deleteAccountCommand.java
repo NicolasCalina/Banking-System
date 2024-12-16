@@ -24,13 +24,13 @@ public class deleteAccountCommand implements Command {
         this.success = false;
     }
 
-    public void execute(){
+    public void execute() {
         for (User user : users) {
             if (user.getEmail().equals(email)) {
                 Iterator<Account> iterator = user.getAccounts().iterator();
                 while (iterator.hasNext()) {
                     Account account = iterator.next();
-                    if (account.getIBAN().equals(this.account)) {
+                    if (account.getIBAN().equals(this.account) && account.getBalance() == 0) {
                         iterator.remove();
                         success = true;
                         break;

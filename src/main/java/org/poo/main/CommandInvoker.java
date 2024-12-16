@@ -13,7 +13,7 @@ public class CommandInvoker {
 
 
     public void executeCommand() {
-            command.execute();
+        command.execute();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.poo.main;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
@@ -21,9 +22,12 @@ public class Account {
     @JsonProperty("type")
     private String type;
     private ArrayList<Card> cards;
-    // array de cards
+    @JsonIgnore
+    private String alias;
+    @JsonIgnore
+    private double minBalance;
 
-    public Account(CommandInput input){
+    public Account(CommandInput input) {
         this.IBAN = Utils.generateIBAN();
         this.balance = 0;
         this.currency = input.getCurrency();
@@ -31,15 +35,16 @@ public class Account {
         this.cards = new ArrayList<>();
     }
 
-    public Account(Account account){
+    public Account(Account account) {
         this.IBAN = account.getIBAN();
         this.balance = account.getBalance();
         this.currency = account.getCurrency();
         this.type = account.getType();
         this.cards = new ArrayList<>();
-        for( int i = 0 ; i < account.getCards().size(); i++){
+        this.minBalance = account.getMinBalance();
+        for (int i = 0; i < account.getCards().size(); i++) {
             this.cards.add(new Card(account.getCards().get(i)));
         }
+        this.alias = account.getAlias();
     }
-
 }

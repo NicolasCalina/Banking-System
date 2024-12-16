@@ -2,9 +2,11 @@ package org.poo.main.bankingCommands;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.fileio.CommandInput;
 import org.poo.main.Account;
 import org.poo.main.Command;
 import org.poo.main.ExchangeGraph;
+import org.poo.main.Transaction.sendMoneyTransactions;
 import org.poo.main.User;
 
 import java.util.ArrayList;
@@ -13,48 +15,52 @@ import java.util.ArrayList;
 @Setter
 public class sendMoneyCommand implements Command {
     private ArrayList<User> users;
-    private String email;
-    private String Sender;
-    private String Receiver;
-    private double amount;
+    private CommandInput commandInput;
     private ExchangeGraph exchangeGraph;
+    private double amount;
 
-    public sendMoneyCommand(ArrayList<User> users, String email, String Sender, String Receiver, double amount, ExchangeGraph exchangeGraph) {
+    public sendMoneyCommand(ArrayList<User> users, CommandInput commandInput,  ExchangeGraph exchangeGraph) {
         this.users = users;
-        this.email = email;
-        this.Sender = Sender;
-        this.Receiver = Receiver;
-        this.amount = amount;
+        this.commandInput = commandInput;
+        this.amount = commandInput.getAmount();
         this.exchangeGraph = exchangeGraph;
     }
 
-    public void execute(){
+    public void execute() {
         Account senderAccount = null;
         Account receiverAccount = null;
-        for (User user : users ){
-            if ( user.getEmail().equals(email) ){
-                for (Account account : user.getAccounts() ){
-                        if (account.getIBAN().equals(Sender)) {
-                            senderAccount = account;
-                        }
+        User senderUser = null;
+        User receiverUser = null;
+        for (User user : users) {
+            if (user.getEmail().equals(commandInput.getEmail())) {
+                senderUser = user;
+                for (Account account : user.getAccounts()) {
+                    if (account.getIBAN().equals(commandInput.getAccount())) {
+                        senderAccount = account;
+                    }
                 }
             }
         }
-        for (User user : users ){
-                for (Account account : user.getAccounts() ){
-                    if (account.getIBAN().equals(Receiver)) {
-                        receiverAccount = account;
-                    }
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                if (account.getIBAN().equals(commandInput.getReceiver())) {
+                    receiverUser = user;
+                    receiverAccount = account;
                 }
+            }
         }
-        if (senderAccount != null && receiverAccount != null){
-            if (senderAccount.getBalance() >= amount){
+        if (senderAccount != null && receiverAccount != null) {
+            if (senderAccount.getBalance() >= amount) {
                 senderAccount.setBalance(senderAccount.getBalance() - amount);
-                if ( !senderAccount.getCurrency().equals(receiverAccount.getCurrency() ) ){
+                if (!senderAccount.getCurrency().equals(receiverAccount.getCurrency())) {
                     double convert = exchangeGraph.findExchangeRate(senderAccount.getCurrency(), receiverAccount.getCurrency());
                     amount = amount * convert;
                 }
                 receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+                sendMoneyTransactions transaction = new sendMoneyTransactions(commandInput.getAccount(), commandInput.getReceiver(), commandInput.getAmount() , "sent", commandInput.getTimestamp(), commandInput.getDescription(), senderAccount.getCurrency());
+                senderUser.getTransactions().add(transaction);
+                sendMoneyTransactions transactionReceiver = new sendMoneyTransactions(commandInput.getAccount(), commandInput.getReceiver(), commandInput.getAmount() , "sent", commandInput.getTimestamp(), commandInput.getDescription(), senderAccount.getCurrency());
+                receiverUser.getTransactions().add(transactionReceiver);
             }
         }
     }

@@ -7,7 +7,7 @@ import org.poo.main.bankingCommands.payOnlineCommand;
 public class payOnlineOutput {
 
     public static void payOnlineOutputHandler(Command payOnline, ObjectNode outputNode, int timestamp) {
-        if ( !((payOnlineCommand) payOnline).isFoundCard() ) {
+        if (!((payOnlineCommand) payOnline).isFoundCard()) {
             outputNode.putPOJO("command", "payOnline");
             ObjectNode payOnlineDetails = outputNode.objectNode();
             payOnlineDetails.put("timestamp", timestamp);
