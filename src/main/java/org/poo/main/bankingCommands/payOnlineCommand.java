@@ -40,27 +40,47 @@ public class payOnlineCommand implements Command {
                         double exchangeRate = exchangeGraph.findExchangeRate(currency, account.getCurrency());
                         amount *= exchangeRate;
                     }
+
                     for (Card card : account.getCards()) {
                         if (card.getCardNumber().equals(cardNumber)) {
                             foundCard = true;
+
+                            if (account.getBalance() < amount) {
+                                Transactions insufficientFundsTransaction = new Transactions("Insufficient funds", commandInput.getTimestamp());
+                                user.getTransactions().add(insufficientFundsTransaction);
+                                return;
+                            }
+
+                            if (card.getIsFrozen() == 1) {
+                                Transactions transaction = new Transactions("The card is frozen", commandInput.getTimestamp());
+                                user.getTransactions().add(transaction);
+                                return;
+                            }
+
+                            if (account.getBalance() - account.getMinBalance() < amount) {
+                                card.setIsFrozen(1);
+                                card.setStatus("frozen");
+                                Transactions freezeTransaction = new Transactions("The card is frozen", commandInput.getTimestamp());
+                                user.getTransactions().add(freezeTransaction);
+                                return;
+                            }
+
+                            account.setBalance(account.getBalance() - amount);
+                            payOnlineTransactions paymentTransaction = new payOnlineTransactions(amount, commandInput.getCommerciant(), "Card payment", commandInput.getTimestamp());
+                            user.getTransactions().add(paymentTransaction);
+
                             if (card.getIsOneTimeUse() == 1) {
                                 account.getCards().remove(card);
                                 Card newCard = new Card();
                                 newCard.setIsOneTimeUse(1);
                                 account.getCards().add(newCard);
                             }
-                            if (account.getBalance() > amount) {
-                                account.setBalance(account.getBalance() - amount);
-                                payOnlineTransactions transaction = new payOnlineTransactions(amount, commandInput.getCommerciant(), "Card payment", commandInput.getTimestamp());
-                                user.getTransactions().add(transaction);
-                            } else {
-                                Transactions transaction = new Transactions("Insufficient funds", commandInput.getTimestamp());
-                                user.getTransactions().add(transaction);
-                            }
+                            return;
                         }
                     }
                 }
             }
         }
     }
+
 }

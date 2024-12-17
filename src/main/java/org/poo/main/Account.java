@@ -33,6 +33,7 @@ public class Account {
         this.currency = input.getCurrency();
         this.type = input.getAccountType();
         this.cards = new ArrayList<>();
+        this.minBalance = 0;
     }
 
     public Account(Account account) {

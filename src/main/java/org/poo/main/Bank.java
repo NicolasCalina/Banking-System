@@ -107,9 +107,16 @@ public class Bank {
                     invokerSetAlias.executeCommand();
                     break;
                 case "setMinimumBalance":
-                    Command setMinimumBalance = new SetMinBalance(users, commandInput.getAccount(), commandInput.getMinBalance());
+                    Command setMinimumBalance = new SetMinBalance(users, commandInput.getAccount(), commandInput.getAmount());
                     CommandInvoker invokerSetMinBalance = new CommandInvoker(setMinimumBalance);
                     invokerSetMinBalance.executeCommand();
+                    break;
+                case "checkCardStatus":
+                    Command checkCardStatus = new CheckCardStatus(users, commandInput, outputNode);
+                    CommandInvoker invokerCheckCardStatus = new CommandInvoker(checkCardStatus);
+                    invokerCheckCardStatus.executeCommand();
+                    break;
+                case "splitPayment":
                     break;
                 default:
                     break;

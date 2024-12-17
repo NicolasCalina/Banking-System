@@ -22,6 +22,7 @@ public class SetMinBalance implements Command {
             for ( Account account : user.getAccounts() ){
                 if ( account.getIBAN().equals(this.account)){
                     account.setMinBalance(this.amount);
+                    return;
                 }
             }
         }
