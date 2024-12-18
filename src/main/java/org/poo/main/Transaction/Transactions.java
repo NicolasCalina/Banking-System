@@ -7,14 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
-)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = sendMoneyTransactions.class, name = "sendMoney")
-})
 
 public class Transactions {
     private int timestamp;

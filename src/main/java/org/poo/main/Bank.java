@@ -117,6 +117,19 @@ public class Bank {
                     invokerCheckCardStatus.executeCommand();
                     break;
                 case "splitPayment":
+                    Command splitPayment = new SplitPaymentCommand(commandInput, users, exchangeGraph);
+                    CommandInvoker invokerSplitPayment = new CommandInvoker(splitPayment);
+                    invokerSplitPayment.executeCommand();
+                    break;
+                case "report":
+                    Command report = new ReportCommand(users, commandInput, outputNode);
+                    CommandInvoker invokerReport = new CommandInvoker(report);
+                    invokerReport.executeCommand();
+                    break;
+                case "spendingsReport":
+                    Command spendingsReport = new SpendingReportCommand(users, commandInput, outputNode);
+                    CommandInvoker invokerSpendingsReport = new CommandInvoker(spendingsReport);
+                    invokerSpendingsReport.executeCommand();
                     break;
                 default:
                     break;

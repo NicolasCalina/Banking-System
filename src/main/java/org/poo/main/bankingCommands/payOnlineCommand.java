@@ -69,6 +69,15 @@ public class payOnlineCommand implements Command {
                             payOnlineTransactions paymentTransaction = new payOnlineTransactions(amount, commandInput.getCommerciant(), "Card payment", commandInput.getTimestamp());
                             user.getTransactions().add(paymentTransaction);
 
+                            // Actualizează map-ul cu comerciantul și tranzacțiile acestuia
+                            String commerciant = paymentTransaction.getCommerciant();
+                            double transactionAmount = paymentTransaction.getAmount();
+                            double transactionTimestamp = paymentTransaction.getTimestamp();
+
+                            account.getCommerciantsMap().putIfAbsent(commerciant, new ArrayList<>());
+                            account.getCommerciantsMap().get(commerciant).add(transactionAmount);
+                            account.getCommerciantsMap().get(commerciant).add(transactionTimestamp);
+
                             if (card.getIsOneTimeUse() == 1) {
                                 account.getCards().remove(card);
                                 Card newCard = new Card();

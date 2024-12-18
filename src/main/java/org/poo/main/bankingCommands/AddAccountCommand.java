@@ -17,7 +17,7 @@ public class AddAccountCommand implements Command {
     private Account account;
     private int timestamp;
 
-    public AddAccountCommand(ArrayList<User> users, String email, Account account, int timestamp) {
+    public AddAccountCommand(final ArrayList<User> users, String email, Account account, int timestamp) {
         this.users = users;
         this.email = email;
         this.account = account;

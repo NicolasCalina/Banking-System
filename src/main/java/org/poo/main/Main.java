@@ -3,20 +3,15 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.ObjectInput;
-import org.poo.fileio.UserInput;
-import org.poo.main.Transaction.Transactions;
-import org.poo.main.Transaction.sendMoneyTransactions;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -34,6 +29,7 @@ public final class Main {
     /**
      * DO NOT MODIFY MAIN METHOD
      * Call the checker
+     *
      * @param args from command line
      * @throws IOException in case of exceptions to reading / writing
      */
@@ -81,26 +77,6 @@ public final class Main {
 
         Bank bank = new Bank(inputData);
         bank.doActions(inputData, output);
-
-
-        /*
-         * TODO Implement your function here
-         *
-         * How to add output to the output array?
-         * There are multiple ways to do this, here is one example:
-         *
-         * ObjectMapper mapper = new ObjectMapper();
-         *
-         * ObjectNode objectNode = mapper.createObjectNode();
-         * objectNode.put("field_name", "field_value");
-         *
-         * ArrayNode arrayNode = mapper.createArrayNode();
-         * arrayNode.add(objectNode);
-         *
-         * output.add(arrayNode);
-         * output.add(objectNode);
-         *
-         */
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);

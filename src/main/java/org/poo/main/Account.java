@@ -9,6 +9,8 @@ import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -26,6 +28,8 @@ public class Account {
     private String alias;
     @JsonIgnore
     private double minBalance;
+    @JsonIgnore
+    private Map<String, ArrayList<Double>> commerciantsMap = new HashMap<>();  // Modificare aici
 
     public Account(CommandInput input) {
         this.IBAN = Utils.generateIBAN();
@@ -43,6 +47,7 @@ public class Account {
         this.type = account.getType();
         this.cards = new ArrayList<>();
         this.minBalance = account.getMinBalance();
+        this.commerciantsMap = new HashMap<>(account.getCommerciantsMap());
         for (int i = 0; i < account.getCards().size(); i++) {
             this.cards.add(new Card(account.getCards().get(i)));
         }
