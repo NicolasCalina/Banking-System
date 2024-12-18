@@ -6,6 +6,7 @@ import org.poo.main.Account;
 import org.poo.main.Card;
 import org.poo.main.Command;
 import org.poo.main.Transaction.DeleteCardTransactions;
+import org.poo.main.Transaction.Transactions;
 import org.poo.main.User;
 
 import java.util.ArrayList;

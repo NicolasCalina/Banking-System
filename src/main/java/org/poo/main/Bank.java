@@ -96,7 +96,8 @@ public final class Bank {
                 case "deleteAccount":
                     Command deleteAccount = new DeleteAccountCommand(users,
                             commandInput.getEmail(),
-                            commandInput.getAccount());
+                            commandInput.getAccount(),
+                            commandInput.getTimestamp());
                     CommandInvoker invokerDeleteAccount = new CommandInvoker(deleteAccount);
                     invokerDeleteAccount.executeCommand();
                     DeleteAccountOutput.deleteAccountOutputHandler(outputNode, deleteAccount,
@@ -149,6 +150,17 @@ public final class Bank {
                             outputNode);
                     CommandInvoker invokerSpendingsReport = new CommandInvoker(spendingsReport);
                     invokerSpendingsReport.executeCommand();
+                    break;
+                case "addInterest":
+                    Command addInterest = new AddInterestCommand(users, commandInput, outputNode);
+                    CommandInvoker invokerAddInterest = new CommandInvoker(addInterest);
+                    invokerAddInterest.executeCommand();
+                    break;
+                case "changeInterestRate":
+                    Command changeInterestRate = new ChangeInterestCommand(users, commandInput,
+                            outputNode);
+                    CommandInvoker invokerChangeInterestRate = new CommandInvoker(changeInterestRate);
+                    invokerChangeInterestRate.executeCommand();
                     break;
                 default:
                     break;

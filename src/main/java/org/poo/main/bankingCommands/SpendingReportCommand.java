@@ -83,7 +83,7 @@ public final class SpendingReportCommand implements Command {
 
                     List<Map.Entry<String, Double>> sortedCommerciants = new ArrayList<>(totalPerCommerciant.entrySet());
                     sortedCommerciants.sort(Comparator.comparing(Map.Entry::getKey));
-                    
+
                     for (Map.Entry<String, Double> entry : sortedCommerciants) {
                         ObjectNode commerciantNode = commerciantsArray.addObject();
                         commerciantNode.put("commerciant", entry.getKey());
@@ -95,5 +95,10 @@ public final class SpendingReportCommand implements Command {
                 }
             }
         }
+        outputNode.put("command", "spendingsReport");
+        ObjectNode notFoundNode = outputNode.putObject("output");
+        notFoundNode.put("description","Account not found" );
+        notFoundNode.put("timestamp", this.timestamp);
+        outputNode.put("timestamp", this.timestamp);
     }
 }

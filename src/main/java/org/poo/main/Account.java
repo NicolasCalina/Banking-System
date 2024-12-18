@@ -30,6 +30,8 @@ public class Account {
     private double minBalance;
     @JsonIgnore
     private Map<String, ArrayList<Double>> commerciantsMap = new HashMap<>();
+    @JsonIgnore
+    private double interestRate;
 
     public Account(final CommandInput input) {
         this.IBAN = Utils.generateIBAN();
@@ -38,6 +40,7 @@ public class Account {
         this.type = input.getAccountType();
         this.cards = new ArrayList<>();
         this.minBalance = 0;
+        this.interestRate = input.getInterestRate();
     }
 
     public Account(final Account account) {
