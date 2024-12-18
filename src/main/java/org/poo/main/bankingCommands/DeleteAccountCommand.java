@@ -11,19 +11,22 @@ import java.util.Iterator;
 
 @Getter
 @Setter
-public class deleteAccountCommand implements Command {
+public class DeleteAccountCommand implements Command {
     private ArrayList<User> users;
     private String email;
     private String account;
     private boolean success;
 
-    public deleteAccountCommand(ArrayList<User> users, String email, String account) {
+    public DeleteAccountCommand(final ArrayList<User> users,
+                                final String email, final String account) {
         this.users = users;
         this.email = email;
         this.account = account;
         this.success = false;
     }
-
+    /**
+     * This method deletes an account from a user's list of accounts.
+     */
     public void execute() {
         for (User user : users) {
             if (user.getEmail().equals(email)) {

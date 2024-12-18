@@ -10,7 +10,7 @@ import org.poo.main.User;
 
 import java.util.*;
 
-public class SpendingReportCommand implements Command {
+public final class SpendingReportCommand implements Command {
     private ArrayList<User> users;
     private int startTimestamp;
     private int endTimestamp;
@@ -18,7 +18,8 @@ public class SpendingReportCommand implements Command {
     private int timestamp;
     private ObjectNode outputNode;
 
-    public SpendingReportCommand(ArrayList<User> users, CommandInput commandInput, ObjectNode outputNode) {
+    public SpendingReportCommand(final ArrayList<User> users,
+                                 final CommandInput commandInput, final ObjectNode outputNode) {
         this.users = users;
         this.startTimestamp = commandInput.getStartTimestamp();
         this.endTimestamp = commandInput.getEndTimestamp();
@@ -26,7 +27,11 @@ public class SpendingReportCommand implements Command {
         this.timestamp = commandInput.getTimestamp();
         this.outputNode = outputNode;
     }
-
+    /**
+     * Executes the spending report command, generating a JSON report for the specified account.
+     * This includes detailed information about transactions and commerciants.
+     */
+    @Override
     public void execute() {
         for (User user : users) {
             for (Account acc : user.getAccounts()) {
@@ -42,7 +47,8 @@ public class SpendingReportCommand implements Command {
                     ArrayList<ObjectNode> transactionList = new ArrayList<>();
                     Map<String, Double> totalPerCommerciant = new HashMap<>();
 
-                    for (Map.Entry<String, ArrayList<Double>> entry : acc.getCommerciantsMap().entrySet()) {
+                    for (Map.Entry<String, ArrayList<Double>> entry
+                            : acc.getCommerciantsMap().entrySet()) {
                         String commerciant = entry.getKey();
                         ArrayList<Double> values = entry.getValue();
 
@@ -50,7 +56,8 @@ public class SpendingReportCommand implements Command {
                             double amount = values.get(i);
                             double transactionTimestamp = values.get(i + 1);
 
-                            if (transactionTimestamp >= this.startTimestamp && transactionTimestamp <= this.endTimestamp) {
+                            if (transactionTimestamp >= this.startTimestamp
+                                    && transactionTimestamp <= this.endTimestamp) {
                                 ObjectNode transactionNode = JsonNodeFactory.instance.objectNode();
                                 transactionNode.put("timestamp", (int) transactionTimestamp);
                                 transactionNode.put("description", "Card payment");
@@ -59,7 +66,9 @@ public class SpendingReportCommand implements Command {
 
                                 transactionList.add(transactionNode);
 
-                                totalPerCommerciant.put(commerciant, totalPerCommerciant.getOrDefault(commerciant, 0.0) + amount);
+                                totalPerCommerciant.put(commerciant,
+                                        totalPerCommerciant.getOrDefault(commerciant,
+                                                0.0) + amount);
                             }
                         }
                     }
@@ -71,7 +80,11 @@ public class SpendingReportCommand implements Command {
                     }
 
                     ArrayNode commerciantsArray = accountInfo.putArray("commerciants");
-                    for (Map.Entry<String, Double> entry : totalPerCommerciant.entrySet()) {
+
+                    List<Map.Entry<String, Double>> sortedCommerciants = new ArrayList<>(totalPerCommerciant.entrySet());
+                    sortedCommerciants.sort(Comparator.comparing(Map.Entry::getKey));
+                    
+                    for (Map.Entry<String, Double> entry : sortedCommerciants) {
                         ObjectNode commerciantNode = commerciantsArray.addObject();
                         commerciantNode.put("commerciant", entry.getKey());
                         commerciantNode.put("total", entry.getValue());

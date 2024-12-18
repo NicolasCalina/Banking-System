@@ -17,18 +17,23 @@ public class AddAccountCommand implements Command {
     private Account account;
     private int timestamp;
 
-    public AddAccountCommand(final ArrayList<User> users, String email, Account account, int timestamp) {
+    public AddAccountCommand(final ArrayList<User> users, final String email,
+                             final Account account, final int timestamp) {
         this.users = users;
         this.email = email;
         this.account = account;
         this.timestamp = timestamp;
     }
-
+    /**
+     * Method that adds an account to a user.
+     */
     public void execute() {
         for (User user : users) {
             if (user.getEmail().equals(email)) {
                 user.addAccount(account);
-                Transactions transaction = new Transactions("New account created" , timestamp);
+                Transactions transaction = new
+                        Transactions("New account created",
+                        timestamp);
                 user.getTransactions().add(transaction);
                 break;
             }

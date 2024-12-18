@@ -1,7 +1,5 @@
 package org.poo.main.Transaction;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,22 +9,25 @@ import lombok.Setter;
 public class Transactions {
     private int timestamp;
     private String description;
-
-    public Transactions copyTransaction(){
+    /**
+     * Copy the transaction
+     * @return a new transaction with the same values
+     */
+    public Transactions copyTransaction() {
         return new Transactions(this);
     }
 
-    public Transactions(String description, int timestamp) {
+    public Transactions(final String description, final int timestamp) {
         this.description = description;
         this.timestamp = timestamp;
     }
 
-    public Transactions(Transactions transactions) {
+    public Transactions(final Transactions transactions) {
         this.description = transactions.getDescription();
         this.timestamp = transactions.getTimestamp();
     }
 
-    public Transactions(){
+    public Transactions() {
 
     }
 }

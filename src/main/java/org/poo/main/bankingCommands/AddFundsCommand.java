@@ -10,17 +10,20 @@ import org.poo.main.User;
 
 @Getter
 @Setter
-public class addFundsCommand implements Command {
+public class AddFundsCommand implements Command {
     private ArrayList<User> users;
     private String account;
     private double amount;
 
-    public addFundsCommand(ArrayList<User> users, String account, double amount) {
+    public AddFundsCommand(final ArrayList<User> users,
+                           final String account, final double amount) {
         this.users = users;
         this.account = account;
         this.amount = amount;
     }
-
+    /**
+     * This method adds funds to the account.
+     */
     public void execute() {
         for (User user : users) {
             for (Account accountUser : user.getAccounts()) {

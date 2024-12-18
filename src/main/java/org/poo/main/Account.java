@@ -29,9 +29,9 @@ public class Account {
     @JsonIgnore
     private double minBalance;
     @JsonIgnore
-    private Map<String, ArrayList<Double>> commerciantsMap = new HashMap<>();  // Modificare aici
+    private Map<String, ArrayList<Double>> commerciantsMap = new HashMap<>();
 
-    public Account(CommandInput input) {
+    public Account(final CommandInput input) {
         this.IBAN = Utils.generateIBAN();
         this.balance = 0;
         this.currency = input.getCurrency();
@@ -40,7 +40,7 @@ public class Account {
         this.minBalance = 0;
     }
 
-    public Account(Account account) {
+    public Account(final Account account) {
         this.IBAN = account.getIBAN();
         this.balance = account.getBalance();
         this.currency = account.getCurrency();

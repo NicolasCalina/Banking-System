@@ -11,16 +11,19 @@ public class SetMinBalance implements Command {
     private String account;
     private double amount;
 
-    public SetMinBalance(ArrayList<User> users, String account, double amount) {
+    public SetMinBalance(final ArrayList<User> users, final String account,
+                         final double amount) {
         this.users = users;
         this.account = account;
         this.amount = amount;
     }
-
-    public void execute(){
+    /**
+     * Set the minimum balance of an account.
+     */
+    public void execute() {
         for (User user : users) {
-            for ( Account account : user.getAccounts() ){
-                if ( account.getIBAN().equals(this.account)){
+            for (Account account : user.getAccounts()) {
+                if (account.getIBAN().equals(this.account)) {
                     account.setMinBalance(this.amount);
                     return;
                 }

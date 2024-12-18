@@ -5,26 +5,31 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateCardTransactions extends Transactions{
-    public String account;
-    public String card;
-    public String cardHolder;
+public final class CreateCardTransactions extends Transactions {
+    private final String account;
+    private final String card;
+    private final String cardHolder;
 
-    public CreateCardTransactions(String account, String card, String cardHolder, String description, int timestamp){
+    public CreateCardTransactions(final String account,
+                                  final String card, final String cardHolder,
+                                  final String description, final int timestamp) {
         super(description, timestamp);
         this.account = account;
         this.card = card;
         this.cardHolder = cardHolder;
     }
 
-    public CreateCardTransactions(CreateCardTransactions transaction){
+    public CreateCardTransactions(final CreateCardTransactions transaction) {
         super(transaction.getDescription(), transaction.getTimestamp());
         this.account = transaction.account;
         this.card = transaction.card;
         this.cardHolder = transaction.cardHolder;
     }
-
-    public Transactions copyTransaction(){
+    /**
+     * Copy the transaction
+     * @return a new transaction with the same values
+     */
+    public Transactions copyTransaction() {
         return new CreateCardTransactions(this);
     }
 }

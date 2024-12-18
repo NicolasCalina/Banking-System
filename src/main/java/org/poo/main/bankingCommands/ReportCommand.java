@@ -18,7 +18,8 @@ public class ReportCommand implements Command {
     private int timestamp;
     private ObjectNode outputNode;
 
-    public ReportCommand(ArrayList<User> users, CommandInput commandInput, ObjectNode outputNode){
+    public ReportCommand(final ArrayList<User> users, final CommandInput commandInput,
+                         final ObjectNode outputNode) {
         this.users = users;
         this.startTimestamp = commandInput.getStartTimestamp();
         this.endTimestamp = commandInput.getEndTimestamp();
@@ -26,7 +27,9 @@ public class ReportCommand implements Command {
         this.timestamp = commandInput.getTimestamp();
         this.outputNode = outputNode;
     }
-
+    /**
+     * This method is used to generate the report for a specific account.
+     */
     public void execute() {
         for (User user : users) {
             for (Account acc : user.getAccounts()) {
@@ -39,7 +42,8 @@ public class ReportCommand implements Command {
 
                     ArrayNode transactionsArray = accountInfo.putArray("transactions");
                     for (Transactions transaction : user.getTransactions()) {
-                        if (transaction.getTimestamp() >= startTimestamp && transaction.getTimestamp() <= endTimestamp) {
+                        if (transaction.getTimestamp() >= startTimestamp
+                                && transaction.getTimestamp() <= endTimestamp) {
                             transactionsArray.addPOJO(transaction);
                         }
                     }
@@ -50,7 +54,7 @@ public class ReportCommand implements Command {
         }
         outputNode.putPOJO("command", "report");
         ObjectNode error = outputNode.putObject("output");
-        error.put("description" , "Account not found");
+        error.put("description", "Account not found");
         error.put("timestamp", this.timestamp);
         outputNode.put("timestamp", this.timestamp);
     }

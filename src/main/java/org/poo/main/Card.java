@@ -22,7 +22,7 @@ public class Card {
         this.isFrozen = 0;
     }
 
-    public Card(Card card) {
+    public Card(final Card card) {
         this.cardNumber = card.getCardNumber();
         this.status = card.getStatus();
         this.isOneTimeUse = card.getIsOneTimeUse();

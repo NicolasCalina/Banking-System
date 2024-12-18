@@ -18,7 +18,7 @@ public class User {
     @JsonIgnore
     private ArrayList<Transactions> transactions;
 
-    public User(UserInput user) {
+    public User(final UserInput user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
@@ -26,7 +26,7 @@ public class User {
         this.transactions = new ArrayList<>();
     }
 
-    public User(User user) {
+    public User(final User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
@@ -40,7 +40,7 @@ public class User {
         }
     }
 
-    public void addAccount(Account account) {
+    public void addAccount(final Account account) {
         accounts.add(account);
     }
 

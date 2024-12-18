@@ -1,17 +1,23 @@
 package org.poo.main;
 
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Queue;
+@Getter
+@Setter
+/**
+ * CommandInvoker class
+ */
+public final class CommandInvoker {
+    private Command command;
 
-public class CommandInvoker {
-    Command command;
-
-    public CommandInvoker(Command command) {
+    public CommandInvoker(final Command command) {
         this.command = command;
     }
 
-
+    /**
+     * executeCommand method
+     */
     public void executeCommand() {
         command.execute();
     }

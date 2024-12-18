@@ -16,13 +16,16 @@ public class AliasCommand implements Command {
     private String alias;
     private String account;
 
-    public AliasCommand(ArrayList<User> users, String email, String alias, String account) {
+    public AliasCommand(final ArrayList<User> users, final String email,
+                        final String alias, final String account) {
         this.users = users;
         this.email = email;
         this.alias = alias;
         this.account = account;
     }
-
+    /**
+     * This method sets the alias of the account with the given IBAN.
+     */
     public void execute() {
         for (User user : users) {
             if (user.getEmail().equals(email)) {

@@ -19,25 +19,31 @@ public class CheckCardStatus implements Command {
     private String account;
     private String cardNumber;
     private int timestamp;
-    ObjectNode outputNode;
+    private ObjectNode outputNode;
 
-    public CheckCardStatus(ArrayList<User> users, CommandInput commandInput, ObjectNode outputNode){
+    public CheckCardStatus(final ArrayList<User> users, final CommandInput commandInput,
+                           final ObjectNode outputNode) {
         this.users = users;
         this.account = commandInput.getAccount();
         this.cardNumber = commandInput.getCardNumber();
         this.timestamp = commandInput.getTimestamp();
         this.outputNode = outputNode;
     }
-
-    public void execute(){
+    /**
+     * Method that checks the status of a card.
+     */
+    public void execute() {
         int isFound = 0;
-        for ( User user : users ){
-            for (Account account : user.getAccounts() ){
-                for (Card  card : account.getCards() ){
-                    if ( card.getCardNumber().equals(cardNumber) ){
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                for (Card card : account.getCards()) {
+                    if (card.getCardNumber().equals(cardNumber)) {
                         isFound = 1;
-                        if ( account.getBalance() == 0 || account.getBalance() == account.getMinBalance()  ){
-                            Transactions transaction = new Transactions("You have reached the minimum amount of funds, the card will be frozen", timestamp);
+                        if (account.getBalance() == 0 || account.getBalance()
+                                == account.getMinBalance()) {
+                            Transactions transaction = new
+                                    Transactions("You have reached the minimum amount of funds"
+                                    + ", the card will be frozen", timestamp);
                             user.getTransactions().add(transaction);
                             return;
                         }

@@ -13,7 +13,7 @@ public class Commerciants {
     private String description;
     private List<String> commerciants;
 
-    public Commerciants(CommerciantInput commerciants) {
+    public Commerciants(final CommerciantInput commerciants) {
         this.id = commerciants.getId();
         this.description = commerciants.getDescription();
         this.commerciants = commerciants.getCommerciants();
